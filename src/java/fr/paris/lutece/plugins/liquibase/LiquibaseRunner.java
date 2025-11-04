@@ -51,13 +51,14 @@ public class LiquibaseRunner implements IEarlyInitializationService
                 {
                     InputStream buildProperties = getClass().getResourceAsStream("/sql/build.properties");
                     SqlRegexpHelper helper = null;
+                    String url = database.getConnection().getURL();
+                    String dbName = SqlRegexpHelper.findDbName(url);
                     // build.properties is present only if the war was built without SQL processing
                     // so, we process
                     if (buildProperties != null)
                     {
-                        String url = database.getConnection().getURL();
                         AppLogService.info("LiquibaseRunner. Determining target database from connection URL : " + url);
-                        helper = new SqlRegexpHelper(() -> buildProperties, SqlRegexpHelper.findDbName(url));
+                        helper = new SqlRegexpHelper(() -> buildProperties, dbName);
                     }
                     //System.setProperty("liquibase.shouldSendAnalytics", "false");
                      System.setProperty("liquibase.analytics.enabled", "false");
